@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -e -x
+
+export DEBIAN_FRONTEND=noninteractive
+
+KUBERNETES_VERSION=1.18.3-00
+
+debconf-set-selections <<< "grub-efi-amd64 grub2/update_nvram boolean false"
+apt-get -y update
+apt-get -y install sudo openssh-server containerd apt-transport-https curl gnupg2 grub-efi efibootmgr grub-efi-amd64 grub-efi-amd64-signed shim-signed linux-image-generic linux-firmware cloud-init vim lsof
+
+cat >>/etc/modules <<EOF
+br_netfilter
+nfs
+EOF
+
+cat > /etc/sysctl.d/11-k8s-network.conf <<EOF
+net.ipv4.ip_forward = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+
+# INSTALL KUBERNETES
+
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+
+apt-get -y update
+
+apt-get install -y kubeadm=$KUBERNETES_VERSION kubelet=$KUBERNETES_VERSION kubectl=$KUBERNETES_VERSION
+
+systemctl enable cloud-init-local
+systemctl enable cloud-init
+systemctl enable systemd-networkd
+

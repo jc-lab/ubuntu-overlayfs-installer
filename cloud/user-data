@@ -1,0 +1,22 @@
+#cloud-config
+growpart:
+  mode: 'off'
+locale: en_US.UTF-8
+preserve_hostname: true
+manage_etc_hosts: true
+resize_rootfs: false
+ssh_pwauth: true
+users:
+- name: admin
+  gecos: admin
+  groups:
+  - adm
+  - cdrom
+  - dip
+  - plugdev
+  - lxd
+  - sudo
+  lock-passwd: false
+  passwd: $6$qVtaDdxEViYuhJTE$MN8qF8OXda86aRzNNeHonPBrJj7nUM6A.o/pokhqUePLsZv8q09iFiuyA7eRm7061VbcPKgVDMj8bT8KUO49.1
+  shell: /bin/bash
+
