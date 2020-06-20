@@ -86,6 +86,10 @@ if [ $? -ne 0 ]; then
     /bin/bash
 fi
 
+[ ! -d /var/lib/cloud/seed/nocloud-net ] && mkdir -p /var/lib/cloud/seed/nocloud-net
+mkdir -p /var/lib/
+cp /.rootfs.rw/cloud/* /var/lib/cloud/seed/nocloud-net/
+
 mount --move $ROOTFS_TMP/dev /dev
 mount --move $ROOTFS_TMP/sys /sys
 

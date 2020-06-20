@@ -109,9 +109,6 @@ push_mount ${TEMP_ROOTFS}/sys
 mount -t tmpfs tmpfs ${TEMP_ROOTFS}/tmp
 push_mount ${TEMP_ROOTFS}/tmp
 
-cp ./grub-mkconfig.sh ${TEMP_ROOTFS}/boot/grub-mkconfig.sh
-chmod +x ${TEMP_ROOTFS}/boot/grub-mkconfig.sh
-
 cp -rf ${TEMP_ROOTFS}/etc/grub.d ${TEMP_ROOTFS}/tmp/grub.d
 mount -t tmpfs tmpfs ${TEMP_ROOTFS}/etc/grub.d
 push_mount ${TEMP_ROOTFS}/etc/grub.d
@@ -142,8 +139,9 @@ push_mount $TEMP_OVERLAY
 echo "$GRUB_DEVICE_BOOT_TARGET /boot vfat defaults,uid=0,gid=0,umask=333 0 0" >> $TEMP_OVERLAY/etc/fstab
 echo "/.rootfs.rw/data/var/lib/containerd /var/lib/containerd none bind,defaults 0 0" >> $TEMP_OVERLAY/etc/fstab
 
-mkdir -p $TEMP_OVERLAY/var/lib/cloud/seed/nocloud-net
-CLOUD_METADATA_FILE=$TEMP_OVERLAY/var/lib/cloud/seed/nocloud-net/meta-data
+mkdir -p $TEMP_UPPER/cloud
+cp ./cloud/user-data $TEMP_UPPER/cloud/user-data
+CLOUD_METADATA_FILE=$TEMP_UPPER/cloud/meta-data
 
 echo "instance-id: $(uuidgen)" > $CLOUD_METADATA_FILE
 echo "local-hostname: $TARGET_HOSTNAME" >> $CLOUD_METADATA_FILE

@@ -8,7 +8,7 @@ KUBERNETES_VERSION=1.18.3-00
 
 debconf-set-selections <<< "grub-efi-amd64 grub2/update_nvram boolean false"
 apt-get -y update
-apt-get -y install sudo openssh-server containerd apt-transport-https curl gnupg2 grub-efi efibootmgr grub-efi-amd64 grub-efi-amd64-signed shim-signed linux-image-generic linux-firmware cloud-init vim lsof
+apt-get -y install sudo openssh-server containerd apt-transport-https curl gnupg2 grub-efi efibootmgr grub-efi-amd64 grub-efi-amd64-signed shim-signed linux-image-generic linux-firmware cloud-init vim lsof sysstat net-tools
 
 cat >>/etc/modules <<EOF
 br_netfilter
@@ -31,7 +31,7 @@ apt-get -y update
 
 apt-get install -y kubeadm=$KUBERNETES_VERSION kubelet=$KUBERNETES_VERSION kubectl=$KUBERNETES_VERSION
 
-systemctl enable cloud-init-local
-systemctl enable cloud-init
-systemctl enable systemd-networkd
+systemctl enable cloud-init-local.service
+systemctl enable cloud-init.service
+systemctl enable systemd-networkd.service
 

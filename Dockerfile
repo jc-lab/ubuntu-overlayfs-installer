@@ -33,19 +33,15 @@ RUN rm -f $ROOTFS_PATH/etc/ssh/*key* && \
 
 COPY ["./scripts/", "/work/scripts/"]
 ENV BUILD_SCRIPTS=/work/scripts
-RUN chmod +x $BUILD_SCRIPTS/* && \
+RUN chmod +x $BUILD_SCRIPTS/*.sh && \
     ls -al $BUILD_SCRIPTS && \
     cp $BUILD_SCRIPTS/run.sh /run.sh && \
     cp $BUILD_SCRIPTS/overlay-init.sh $ROOTFS_PATH/overlay-init.sh && \
     mkdir -p $ROOTFS_PATH/boot/EFI && \
     mkdir -p $ROOTFS_PATH/etc/init && \
     cp -rf $BUILD_SCRIPTS/etc_init/* $ROOTFS_PATH/etc/init/ && \
-    sed -i -e 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="init=\/overlay-init.sh console=tty1"/g' $ROOTFS_PATH/etc/default/grub
-
-COPY ["./cloud/user-data", "/work/user-data"]
-RUN mkdir -p $ROOTFS_PATH/var/lib/cloud/seed/nocloud-net && \
-    cp /work/user-data $ROOTFS_PATH/var/lib/cloud/seed/nocloud-net/user-data && \
-    chmod 600 $ROOTFS_PATH/var/lib/cloud/seed/nocloud-net/user-data
+    sed -i -e 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="init=\/overlay-init.sh console=tty1"/g' $ROOTFS_PATH/etc/default/grub && \
+    cp $BUILD_SCRIPTS/load-no-cloud.sh $ROOTFS_PATH/usr/sbin/load-no-cloud.sh
 
 RUN ls -al $ROOTFS_PATH/boot/
 
