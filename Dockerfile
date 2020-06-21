@@ -43,7 +43,7 @@ RUN chmod +x $BUILD_SCRIPTS/*.sh && \
     sed -i -e 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="init=\/overlay-init.sh console=tty1"/g' $ROOTFS_PATH/etc/default/grub && \
     cp $BUILD_SCRIPTS/load-no-cloud.sh $ROOTFS_PATH/usr/sbin/load-no-cloud.sh
 
-RUN ls -al $ROOTFS_PATH/boot/
+RUN rm $ROOTFS_PATH/etc/machine-id
 
 RUN mksquashfs $ROOTFS_PATH /work/rootfs.sqfs -b 128K -comp gzip
 
