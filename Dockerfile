@@ -2,24 +2,29 @@ FROM ubuntu:20.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN echo '\n\
-deb mirror://mirrors.ubuntu.com/mirrors.txt focal main restricted universe multiverse\n\
-deb mirror://mirrors.ubuntu.com/mirrors.txt focal-updates main restricted universe multiverse\n\
-deb mirror://mirrors.ubuntu.com/mirrors.txt focal-backports main restricted universe multiverse\n\
-deb mirror://mirrors.ubuntu.com/mirrors.txt focal-security main restricted universe multiverse\n\
-' > /tmp/apt.mirror.sources.list && \
-    cat /tmp/apt.mirror.sources.list > /tmp/apt.sources.list && \
-    cat /tmp/apt.sources.list > /etc/apt/sources.list
-
 RUN apt-get update -y && \
-    apt-get install -y curl xz-utils unzip dump squashfs-tools qemu-user-static binfmt-support dosfstools debootstrap
+    apt-get install -y ca-certificates curl
+
+RUN APT_REPO_LIST=$(curl http://mirrors.ubuntu.com/mirrors.txt | grep -v misakamikoto) && \
+    APT_REPO=$(echo "$APT_REPO_LIST" | grep kakao | head -n 1) && \
+    TEST_A=$(echo $APT_REPO) && \
+    if [ "x$TEST_A" == "x" ]; then APT_REPO=$(echo "$APT_REPO_LIST" | head -n 1); fi && \
+    echo $APT_REPO > /tmp/apt.repo.txt && \
+    echo "\n\
+deb $APT_REPO focal main restricted universe multiverse\n\
+deb $APT_REPO focal-updates main restricted universe multiverse\n\
+deb $APT_REPO focal-backports main restricted universe multiverse\n\
+deb $APT_REPO focal-security main restricted universe multiverse\n\
+" > /etc/apt/sources.list && \
+    apt-get update -y && \
+    apt-get install -y xz-utils unzip dump squashfs-tools dosfstools debootstrap whois
 
 ENV ROOTFS_PATH=/work/rootfs
 
 RUN mkdir -p $ROOTFS_PATH && \
-    APT_REPO=$(curl http://mirrors.ubuntu.com/mirrors.txt | head -n 1) && \
+    APT_REPO=$(cat /tmp/apt.repo.txt) && \
     debootstrap --arch amd64 focal $ROOTFS_PATH $APT_REPO && \
-    cp -f /tmp/apt.mirror.sources.list $ROOTFS_PATH/etc/apt/sources.list
+    cp -f /etc/apt/sources.list $ROOTFS_PATH/etc/apt/sources.list
 
 COPY ["./scripts/prebuild.sh", "/work/scripts/prebuild.sh"]
 RUN cp /work/scripts/prebuild.sh $ROOTFS_PATH/prebuild.sh && \
