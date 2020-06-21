@@ -45,7 +45,8 @@ RUN chmod +x $BUILD_SCRIPTS/*.sh && \
     sed -i -e 's/^quiet_boot="1"/quiet_boot="0"/g' $ROOTFS_PATH/etc/grub.d/10_linux && \
     cp $BUILD_SCRIPTS/load-no-cloud.sh $ROOTFS_PATH/usr/sbin/load-no-cloud.sh
 
-RUN rm $ROOTFS_PATH/etc/machine-id
+RUN rm $ROOTFS_PATH/etc/machine-id && \
+    rm $ROOTFS_PATH/var/lib/dbus/machine-id
 
 RUN mksquashfs $ROOTFS_PATH /work/rootfs.sqfs -b 128K -comp gzip
 
