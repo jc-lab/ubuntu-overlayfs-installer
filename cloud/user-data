@@ -7,8 +7,8 @@ manage_etc_hosts: true
 resize_rootfs: false
 ssh_pwauth: true
 users:
-- name: admin
-  gecos: admin
+- name: <ADMIN_USER>
+  gecos: <ADMIN_USER>
   groups:
   - adm
   - cdrom
@@ -17,6 +17,6 @@ users:
   - lxd
   - sudo
   lock-passwd: false
-  passwd: $6$qVtaDdxEViYuhJTE$MN8qF8OXda86aRzNNeHonPBrJj7nUM6A.o/pokhqUePLsZv8q09iFiuyA7eRm7061VbcPKgVDMj8bT8KUO49.1
+  passwd: <ADMIN_PASSWD>
   shell: /bin/bash
 

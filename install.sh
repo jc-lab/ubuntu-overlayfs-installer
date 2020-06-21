@@ -19,16 +19,37 @@ function push_mount () {
   MOUNT_LIST="$1 $MOUNT_LIST"
 }
 
+mkpasswd=$(which mkpasswd)
+[ ! $? -eq 0 ] && mkpasswd=./mkpasswd
+
 while :
 do
-  echo "Enter hostname: "
+  echo -n "Enter hostname: "
   read TARGET_HOSTNAME
   if [ -n "$TARGET_HOSTNAME" ]; then
     break
   fi
 done
-
 echo "HOSTNAME=$TARGET_HOSTNAME"
+
+while :
+do
+  echo -n "Enter admin username: "
+  read TARGET_ADMIN_USER
+  if [ -n "$TARGET_ADMIN_USER" ]; then
+    break
+  fi
+done
+echo "TARGET_ADMIN_USER=$TARGET_ADMIN_USER"
+
+while :
+do
+  echo -n "Enter admin password: "
+  TARGET_ADMIN_PASSWD=$($mkpasswd -m sha-256)
+  if [ -n "$TARGET_ADMIN_PASSWD" ]; then
+    break
+  fi
+done
 
 rm -rf $TEMP_DIR
 mkdir -p $TEMP_BOOT $TEMP_ROOTFS $TEMP_OVERLAY $TEMP_UPPER
@@ -141,6 +162,10 @@ echo "/.rootfs.rw/data/var/lib/containerd /var/lib/containerd none bind,defaults
 
 mkdir -p $TEMP_UPPER/cloud
 cp ./cloud/user-data $TEMP_UPPER/cloud/user-data
+
+sed -i -e "s~<ADMIN_USER>~$TARGET_ADMIN_USER~g" $TEMP_UPPER/cloud/user-data
+sed -i -e "s~<ADMIN_PASSWD>~$TARGET_ADMIN_PASSWD~g" $TEMP_UPPER/cloud/user-data
+
 CLOUD_METADATA_FILE=$TEMP_UPPER/cloud/meta-data
 
 echo "instance-id: $(uuidgen)" > $CLOUD_METADATA_FILE
