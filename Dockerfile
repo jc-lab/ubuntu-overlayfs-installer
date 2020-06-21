@@ -41,6 +41,8 @@ RUN chmod +x $BUILD_SCRIPTS/*.sh && \
     mkdir -p $ROOTFS_PATH/etc/init && \
     cp -rf $BUILD_SCRIPTS/etc_init/* $ROOTFS_PATH/etc/init/ && \
     sed -i -e 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="init=\/overlay-init.sh console=tty1"/g' $ROOTFS_PATH/etc/default/grub && \
+    sed -i -e 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="nomodeset"/g' $ROOTFS_PATH/etc/default/grub && \
+    sed -i -e 's/^quiet_boot="1"/quiet_boot="0"/g' $ROOTFS_PATH/etc/grub.d/10_linux && \
     cp $BUILD_SCRIPTS/load-no-cloud.sh $ROOTFS_PATH/usr/sbin/load-no-cloud.sh
 
 RUN rm $ROOTFS_PATH/etc/machine-id
