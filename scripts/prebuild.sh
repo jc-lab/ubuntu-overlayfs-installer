@@ -8,7 +8,7 @@ KUBERNETES_VERSION=1.18.3-00
 
 debconf-set-selections <<< "grub-efi-amd64 grub2/update_nvram boolean false"
 apt-get -y update
-apt-get -y install sudo openssh-server containerd apt-transport-https curl gnupg2 grub-efi efibootmgr grub-efi-amd64 grub-efi-amd64-signed shim-signed linux-image-generic linux-firmware cloud-init vim lsof sysstat net-tools
+apt-get -y install sudo openssh-server containerd apt-transport-https curl gnupg2 grub-efi efibootmgr grub-efi-amd64 grub-efi-amd64-signed shim-signed linux-image-generic linux-firmware cloud-init vim lsof sysstat net-tools cryptsetup cryptsetup-bin mdadm libcryptsetup12 cryptmount
 
 cat >>/etc/modules <<EOF
 br_netfilter
