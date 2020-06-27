@@ -162,6 +162,7 @@ echo "/.rootfs.rw/data/var/lib/containerd /var/lib/containerd none bind,defaults
 
 mkdir -p $TEMP_UPPER/cloud
 cp ./cloud/user-data $TEMP_UPPER/cloud/user-data
+chmod 400 $TEMP_UPPER/cloud/user-data
 
 sed -i -e "s~<ADMIN_USER>~$TARGET_ADMIN_USER~g" $TEMP_UPPER/cloud/user-data
 sed -i -e "s~<ADMIN_PASSWD>~$TARGET_ADMIN_PASSWD~g" $TEMP_UPPER/cloud/user-data
@@ -170,6 +171,8 @@ CLOUD_METADATA_FILE=$TEMP_UPPER/cloud/meta-data
 
 echo "instance-id: $(uuidgen)" > $CLOUD_METADATA_FILE
 echo "local-hostname: $TARGET_HOSTNAME" >> $CLOUD_METADATA_FILE
+
+chmod 644 $TEMP_UPPER/cloud/meta-data
 
 echo "Unmounting filesystems"
 for a in $MOUNT_LIST
