@@ -33,7 +33,7 @@ apt-get install -y kubeadm=$KUBERNETES_VERSION kubelet=$KUBERNETES_VERSION kubec
 
 sed -i -e 's/update_initramfs=yes/update_initramfs=no/g' /etc/initramfs-tools/update-initramfs.conf
 
-apt-mark kubeadm kubelet kubectl
+apt-mark hold kubeadm kubelet kubectl
 
 systemctl enable cloud-init-local.service
 systemctl enable cloud-init.service
