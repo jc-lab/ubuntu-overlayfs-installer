@@ -31,6 +31,10 @@ apt-get -y update
 
 apt-get install -y kubeadm=$KUBERNETES_VERSION kubelet=$KUBERNETES_VERSION kubectl=$KUBERNETES_VERSION
 
+sed -i -e 's/update_initramfs=yes/update_initramfs=no/g' /etc/initramfs-tools/update-initramfs.conf
+
+apt-mark hold mdadm linux-image
+
 systemctl enable cloud-init-local.service
 systemctl enable cloud-init.service
 systemctl enable systemd-networkd.service
