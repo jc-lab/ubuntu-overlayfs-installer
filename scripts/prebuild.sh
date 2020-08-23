@@ -4,7 +4,7 @@ set -e -x
 
 export DEBIAN_FRONTEND=noninteractive
 
-KUBERNETES_VERSION=1.18.3-00
+KUBERNETES_VERSION=1.18.8-00
 
 debconf-set-selections <<< "grub-efi-amd64 grub2/update_nvram boolean false"
 apt-get -y update
@@ -34,6 +34,7 @@ apt-get install -y kubeadm=$KUBERNETES_VERSION kubelet=$KUBERNETES_VERSION kubec
 sed -i -e 's/update_initramfs=yes/update_initramfs=no/g' /etc/initramfs-tools/update-initramfs.conf
 
 apt-mark hold mdadm linux-image
+apt-mark kubeadm kubelet kubectl
 
 systemctl enable cloud-init-local.service
 systemctl enable cloud-init.service
